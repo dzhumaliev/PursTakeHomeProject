@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ui</string>
+    <string name="bg_url">https://lh3.googleusercontent.com/p/AF1QipNvaaR6eoBC7I48N_-ROU30qsi_h2Sf5eQRxWtr=s1360-w1360-h1020</string>
+    <string name="day_of_week">day_of_week</string>
+    <string name="intervals">intervals</string>
+    <string name="see_full_hours">SEE FULL HOURS</string>
+    <string name="view_menu">View Menu</string>
 </resources>

@@ -1,6 +1,6 @@
 package com.iso.purstestproject.app
 
-import com.iso.data.network.Api
+import com.iso.data.network.createNetworkClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,12 +10,11 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class ApiModule {
+object AppModule {
+
 
     @Provides
     @Singleton
-    fun api(retrofit: Retrofit): Api = retrofit.create(Api::class.java)
-
-
+    fun retrofit(): Retrofit = createNetworkClient()
 
 }

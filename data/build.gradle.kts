@@ -2,11 +2,15 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.kotlin.serialization)
+
 }
 
 android {
     namespace = "com.iso.data"
     compileSdk = 35
+    android.buildFeatures.buildConfig = true
 
     defaultConfig {
         minSdk = 24
@@ -55,5 +59,15 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    implementation(libs.retrofit)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
+
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.retrofit.converter.kotlinx.serialization)
+    implementation (libs.converter.gson)
+    implementation (libs.gson)
+
     implementation(project(":domain"))
+    implementation(libs.javax.inject)
 }
