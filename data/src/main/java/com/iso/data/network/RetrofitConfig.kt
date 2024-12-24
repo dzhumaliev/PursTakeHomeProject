@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit
 
 private const val currentUrl = "https://purs-demo-bucket-test.s3.us-west-2.amazonaws.com/"
 
-
 fun createNetworkClient() = retrofitClient (
     okHttpClient()
 )

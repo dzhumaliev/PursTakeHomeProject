@@ -16,6 +16,4 @@ class ApiModule {
     @Singleton
     fun api(retrofit: Retrofit): Api = retrofit.create(Api::class.java)
 
-
-
 }

@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -31,6 +32,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -52,6 +54,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.iso.ui.R
+import com.iso.ui.constants.Constants.GREEN
+import com.iso.ui.constants.Constants.RED
+import com.iso.ui.constants.Constants.YELLOW
+import com.iso.ui.viewmodel.StatusModel
 import com.iso.ui.viewmodel.TimeViewModel
 
 
@@ -60,7 +66,10 @@ fun MainScreen(viewModel: TimeViewModel) {
 
     val stateValue by viewModel.data.collectAsState()
     val stateLocationValue by viewModel.locationName.collectAsState()
+    val stateInternetValue by viewModel.isInternetIssue.collectAsState()
+    val stateStatusValue by viewModel.openStatus.collectAsState()
     var expanded by remember { mutableStateOf(false) }
+
 
     BackgroundImg(expanded)
 
@@ -76,7 +85,7 @@ fun MainScreen(viewModel: TimeViewModel) {
 
         )
 
-        expanded = operatingHoursBox(stateValue)
+        expanded = operatingHoursBox(stateValue, stateStatusValue = stateStatusValue)
 
         if (!expanded) Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -101,6 +110,17 @@ fun MainScreen(viewModel: TimeViewModel) {
         }
     }
 
+    Box(modifier = Modifier.fillMaxSize()){
+        Text(
+            stateInternetValue,
+            modifier = Modifier
+                .fillMaxSize()
+                .size(50.dp)
+                .align(Alignment.TopStart)
+                .padding(16.dp),
+            color = Color.Red
+        )
+    }
 }
 
 @Composable
@@ -121,7 +141,8 @@ fun BackgroundImg(isBlur: Boolean) {
 internal fun operatingHoursBox(
     stateValue: List<Map<String, Any>>,
     modifier: Modifier = Modifier,
-    onExpand: (Boolean) -> Unit = {}
+    onExpand: (Boolean) -> Unit = {},
+    stateStatusValue: StatusModel?,
 ): Boolean {
     var expanded by remember { mutableStateOf(false) }
     val expandIconAngle = remember { Animatable(90f) }
@@ -171,16 +192,26 @@ internal fun operatingHoursBox(
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-//                        location.status?.let { status ->
-//                            LocationStatusText(
-//                                status,
-//                                modifier = Modifier.padding(end = DefaultPadding)
-//                            )
-//                        }
-//                        Spacer(modifier = Modifier.width(SmallPadding))
-//                        location.status?.let { status ->
-//                            LocationStatusBadge(status)
-//                        }
+                        Text(
+                            modifier = modifier,
+                            text = stateStatusValue?.statusText.toString(),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        when (stateStatusValue?.statusColor) {
+                            GREEN -> {
+                                badgeColor(modifier, Color.Green)
+                            }
+
+                            RED -> {
+                                badgeColor(modifier, Color.Red)
+                            }
+
+                            YELLOW -> {
+                                badgeColor(modifier, Color.Yellow)
+                            }
+                        }
                     }
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowRight,
@@ -189,7 +220,9 @@ internal fun operatingHoursBox(
                     )
                 }
                 Text(
-                    text = stringResource(R.string.see_full_hours), fontSize = 12.sp, color = Color.Gray
+                    text = stringResource(R.string.see_full_hours),
+                    fontSize = 12.sp,
+                    color = Color.Gray
                 )
             }
         }
@@ -222,6 +255,19 @@ internal fun operatingHoursBox(
     return expanded
 }
 
+
+@Composable
+fun badgeColor(modifier: Modifier, color: Color) {
+    Box(
+        modifier = modifier
+            .size(8.dp)
+            .background(
+                color = color, shape = MaterialTheme.shapes.small
+            )
+    )
+}
+
+
 @Composable
 fun WorkingHourView(workingDay: Map<String, Any>) {
     Row(
@@ -246,40 +292,7 @@ fun WorkingHourView(workingDay: Map<String, Any>) {
                         }
                     }
                 }
-
-                else -> {
-
-                }
             }
         }
     }
 }
-
-//val textWeight = boldTodayText(it.value.toString())
-//style = MaterialTheme.typography.bodyLarge.copy(fontWeight = textWeight)
-
-//@Composable
-//fun boldTodayText(dayOfWeek: String): FontWeight {
-//    return if (dayOfWeek == getCurrentDayOfWeek()) {
-//        FontWeight.Bold
-//    } else {
-//        FontWeight.Normal
-//    }
-//}
-//
-//fun getCurrentDayOfWeek(): String {
-//    val calendar = Calendar.getInstance()
-//    val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
-//
-//    // Преобразуем день недели в строку
-//    return when (dayOfWeek) {
-//        Calendar.MONDAY -> "Monday"
-//        Calendar.TUESDAY -> "Tuesday"
-//        Calendar.WEDNESDAY -> "Wednesday"
-//        Calendar.THURSDAY -> "Thursday"
-//        Calendar.FRIDAY -> "Friday"
-//        Calendar.SATURDAY -> "Saturday"
-//        Calendar.SUNDAY -> "Sunday"
-//        else -> "Unknown"
-//    }
-//}
